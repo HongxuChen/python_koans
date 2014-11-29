@@ -35,7 +35,27 @@ from runner.koan import *
 
 def score(dice):
     # You need to write this method
-    pass
+    occurrence = {}
+    for i in dice:
+        if i in occurrence:
+            occurrence[i]+=1
+        else:
+            occurrence[i]=1
+    result = 0
+    for i in occurrence:
+        if occurrence[i] >= 3:
+            if i == 1:
+                result+=1000 + 100*(occurrence[i]-3)
+            else:
+                result += 100 * i
+                if i==5:
+                    result += 50*(occurrence[i] - 3)
+        else:
+            if i == 1:
+                result += 100*occurrence[i]
+            elif i == 5:
+                result += 50 * occurrence[i]
+    return result
 
 
 class AboutScoringProject(Koan):

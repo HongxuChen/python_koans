@@ -19,6 +19,8 @@
 #
 def triangle(a, b, c):
     # DELETE 'PASS' AND WRITE THIS CODE
+    if a <= 0 or b <= 0 or c <= 0 or a + b <= c or a + c <= b or b + c <= a:
+        raise TriangleError
     if a == b and b == c:
         return 'equilateral'
     elif a == b or b == c or a == c:
