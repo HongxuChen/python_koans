@@ -16,17 +16,48 @@
 # Note: This is a bit trickier than its Ruby Koans counterpart, but you
 # can do it!
 
-from runner.koan import *
+####################################################################
+####################################################################
 
+from runner.koan import *
+from collections import Counter
 
 class Proxy(object):
     def __init__(self, target_object):
-        # WRITE CODE HERE
-
-        #initialize '_obj' attribute last. Trust me on this!
+        self._messages=[]
         self._obj = target_object
 
-    # WRITE CODE HERE
+    def messages(self):
+        return self._messages
+
+    def was_called(self, message):
+        return message in self._messages
+
+    def number_of_times_called(self, message):
+        _count = Counter(self._messages).get(message)
+        if _count:
+            return _count
+        else: # catch None
+            return 0
+
+    def __getattribute__(self, attr_name):
+        try: # call on self
+            retval = object.__getattribute__(self, attr_name)
+        except AttributeError: # call on child object
+            retval = self._obj.__getattribute__(attr_name)
+            object.__getattribute__(self, '_messages').append(attr_name)
+
+        return retval
+
+    def __setattr__(self, attr_name, attr_value):
+        if hasattr(self, '_obj'): # call child object and log message
+            self._obj.__setattr__(attr_name, attr_value)
+            object.__getattribute__(self, '_messages').append(attr_name)
+        else: # use this before_obj is set in __init__
+            object.__setattr__(self, attr_name, attr_value)
+
+    def messages(self):
+        return self._messages
 
 
 # The proxy object should pass the following Koan:
